@@ -1,0 +1,76 @@
+<?define PackageDescription="BhaiFi Agent" ?>
+<?define Manufacturer="BhaiFi Private Limited" ?>
+<?define Name="BhaiFi Agent" ?>
+<?define Version="1.0.0" ?>
+<?define SourceDir="."?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="$(var.Name)" Language="1033" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="bda136cc-5d66-4aab-8898-426cb8bf41c1">
+    <Package InstallerVersion="405" Compressed="yes" />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id="PORT" Secure="yes" />
+    <Property Id="TIME_INTERVAL" Secure="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="BhaiFi Agent">
+          
+          <Component Id="AgentComponent" Guid="1090d036-c985-461f-94f6-3121dbcfcb48">
+            <File Id="AgentExe" Name="main.exe" Source="main.exe" KeyPath="yes" />
+            <RemoveFile Id="RemoveAgent" Name="main.exe" On="uninstall" />
+          </Component>
+
+          <Component Id="CleanupBatchComponent" Guid="df39c0cc-0910-4a9e-bfa2-5c680d14b5cc">
+            <File Id="CleanupBatchFile" Name="cleanup.bat" Source="cleanup.bat" KeyPath="yes" />
+          </Component>
+
+          <Directory Id="ConfigsDir" Name="configs">
+            <Component Id="ConfigsComponent" Guid="A123B456-C789-D012-E345-F67891011121">
+              <File Id="ConfigYaml" Name="config.yaml" Source="configs/config.yaml" KeyPath="yes" />
+              <RemoveFolder Id="RemoveConfigsDir" On="uninstall" />
+            </Component>
+          </Directory>
+
+          <Directory Id="DataDir" Name="data">
+            <Component Id="DataComponent" Guid="6FC7967B-4901-480E-AB85-022FF8BB3BE6">
+              <File Id="malwareJson" Name="malware_hashes.json" Source="data/malware_hashes.json" KeyPath="yes" />
+              <RemoveFolder Id="RemoveDataDir" On="uninstall" />
+            </Component>
+          </Directory>
+
+          <Component Id="RegistryComponent" Guid="df73c655-05c6-43ef-9524-1dea6c92c703">
+            <RegistryKey Root="HKLM" Key="Software\BhaiFi\BhaiFi_Agent" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+              <RegistryValue Name="Port" Value="[PORT]" Type="string" />
+              <RegistryValue Name="TimeInterval" Value="[TIME_INTERVAL]" Type="string" />
+            </RegistryKey>
+          </Component>
+
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="MainFeature" Title="Bhaifi_Agent Feature" Level="1">
+      <ComponentRef Id="AgentComponent" />
+      <ComponentRef Id="CleanupBatchComponent" />
+      <ComponentRef Id="ConfigsComponent" />
+      <ComponentRef Id="DataComponent" />
+      <ComponentRef Id="RegistryComponent" />
+    </Feature>
+
+   
+    <CustomAction Id="RunAgent" FileKey="AgentExe" ExeCommand="" Execute="deferred" Impersonate="no" Return="check" />
+
+    <CustomAction Id="RunCleanupBatch"
+                  ExeCommand="cmd.exe /C cleanup.bat"
+                  Directory="INSTALLDIR"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+    <InstallExecuteSequence>
+      <Custom Action="RunAgent" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action="RunCleanupBatch" Before="RemoveFiles">REMOVE="ALL"</Custom>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>
