@@ -1,16 +1,5 @@
 # BhaiFi Agent Service
 
-## 📋 Table of Contents
-- [Prerequisites](#-prerequisites)
-- [Installation](#-installation)
-  - [1. Clone the Repository](#1-clone-the-repository)
-  - [2. Build the Agent Service](#2-build-the-agent-service)
-  - [3. Create MSI Installer](#3-create-msi-installer)
-  - [4. Install as Windows Service](#4-install-as-windows-service)
-- [API Usage](#-api-usage)
-- [Configuration](#%EF%B8%8F-configuration)
-- [Notes](#-notes)
-
 ## 🛠 Prerequisites
 
 ```bash
