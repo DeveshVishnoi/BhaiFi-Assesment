@@ -130,7 +130,7 @@ func main() {
 				systemLogger.Error(err)
 				return
 			}
-			systemLogger.Info("Infinity Agent Service installed.")
+			systemLogger.Info("BhaiFI Agent Service installed.")
 		} else {
 			systemLogger.Error(err)
 			return
@@ -143,7 +143,7 @@ func main() {
 			systemLogger.Error(err)
 			return
 		}
-		systemLogger.Info("Infinity Agent Service has started.")
+		systemLogger.Info("BhaiFI Agent Service has started.")
 		return
 	}
 
